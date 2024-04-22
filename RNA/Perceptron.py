@@ -15,12 +15,14 @@ class Perceptron:
             else:
                 self.layers.append(Neural_layer(layers_config[i], layers_config[i - 1], activation_function))
 
-    def Training(self, training_list, iterations = 10000, convergence_magnitud = 5, debug = False):
+    def Training(self, training_list, iterations = 10000, convergence_magnitud = 5, debug = 0):
         past_cost = math.inf
+        J_evolution = []
+
         for i in range(iterations):
             cost = self._Calculate_cost(training_list)
             if past_cost - cost < math.pow(10,-convergence_magnitud):
-                print("Converged in iteration: ", i, " with cost: ", cost)
+                print(" - Converged in iteration: ", i, " with cost: ", cost)
                 break
             else:
                 past_cost = cost
@@ -29,14 +31,16 @@ class Perceptron:
             self._Step_weights()
             self._Clean_cost_gradients()
         
-            if debug:
-                print("Epoch: ", i, " Cost: ", cost)
-                weight_list = self.Get_weights()
-                for i in range(len(weight_list)):
-                    print("Layer ", i, ":")
-                    for j in range(len(weight_list[i])):
-                        print("Neuron ",j, ":", weight_list[i][j])
-                print("\n----------------------\n")
+            if debug > 0:
+                print("Iter: ", i, " Cost: ", cost)
+                J_evolution.append(cost)
+                if debug > 1:
+                    weight_list = self.Get_weights()
+                    for i in range(len(weight_list)):
+                        print("Layer ", i, ":")
+                        for j in range(len(weight_list[i])):
+                            print("Neuron ",j, ":", weight_list[i][j])
+                    print("\n----------------------\n")
 
     def Calculate_output(self, inputs):
         output = []
@@ -118,3 +122,12 @@ class Perceptron:
 
     def Get_weights(self):
         return [layer.Get_weights() for layer in self.layers]
+    
+    def Print_weights(self):
+        print("------ RNA weights -----")
+        weight_list = self.Get_weights()
+        for i in range(len(weight_list)):
+            print("Layer ", i, ":")
+            for j in range(len(weight_list[i])):
+                print("Neuron ",j, ":", weight_list[i][j])
+            print("----------------------")
