@@ -2,5 +2,9 @@
 Repository to develop grafos algorithms and IA. Current projects:
 
     - Ants colony v0.1(WIP)
-    - RNA v1.0 (WIP)
+    - RNA v1.0 
         - Perceptron
+
+TODO:
+    - Path finding algorithms
+

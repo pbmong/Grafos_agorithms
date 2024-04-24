@@ -3,6 +3,9 @@ from layer import Neural_layer
 import math
 
 class Perceptron:
+
+    # --- CONSTUCTOR ---
+
     def __init__(self, input_size, layers_config, activation_function,learning_rate, lambda_ = 0.1):
         self.input_size = input_size
         self.learning_rate = learning_rate
@@ -15,6 +18,9 @@ class Perceptron:
             else:
                 self.layers.append(Neural_layer(layers_config[i], layers_config[i - 1], activation_function))
 
+    # --- PUBLIC METHODS ---
+
+    # Train the Perceptron with an specific training list
     def Training(self, training_list, iterations = 10000, convergence_magnitud = 5, debug = 0):
         past_cost = math.inf
         J_evolution = []
@@ -42,6 +48,7 @@ class Perceptron:
                             print("Neuron ",j, ":", weight_list[i][j])
                     print("\n----------------------\n")
 
+    # Calculate the output of the Perceptron
     def Calculate_output(self, inputs):
         output = []
         for i in range(len(self.layers)):
@@ -52,6 +59,45 @@ class Perceptron:
 
         return self.layers[len(self.layers)-1].Get_outputs()
 
+    # Get the weights of the Perceptron
+    def Get_weights(self):
+        return [layer.Get_weights() for layer in self.layers]
+    
+    # Show the weights of the Perceptron in the console
+    def Print_weights(self):
+        print("------ RNA weights -----")
+        weight_list = self.Get_weights()
+        for i in range(len(weight_list)):
+            print("Layer ", i, ":")
+            for j in range(len(weight_list[i])):
+                print("Neuron ",j, ":", weight_list[i][j])
+            print("----------------------")
+
+    # Set the weights of the Perceptron from a file
+    def Set_weights(self, weights_file_name):
+        weights_file = open(weights_file_name,"r")
+        weights_str = weights_file.read()
+        weights_file.close()
+
+        Perceptron_weights_array = self._Parse_weights(weights_str)
+
+        for i in range(len(self.layers)):
+            self.layers[i].Set_weights(Perceptron_weights_array[i])
+    
+    # Save the weights of the Perceptron in a file
+    def Export_weights_to_file(self, file_name):
+        weights_file = open(file_name,"w")
+        for layer in self.Get_weights():
+            weights_file.write("l\n")
+            for neuron in layer:
+                weights_file.write("n\n")
+                weights_file.write(str(neuron))
+                weights_file.write("\n")
+        weights_file.close()                            
+
+    # --- PRIVATE METHODS ---
+
+    # Calculate the current cost function of the Perceptron
     def _Calculate_cost(self, training_list):
         cost = 0
         for training_item in training_list:
@@ -72,6 +118,7 @@ class Perceptron:
 
         return cost
     
+    # Calculate the error of the neurons of the layers
     def _Calculate_neural_errors(self, training_item):
         for i in range(len(self.layers)-1, -1, -1):
 
@@ -90,6 +137,7 @@ class Perceptron:
 
                     self.layers[i].neurons[j].error = error
 
+    # Calculate the cost gradients of the weights of the layers
     def _Calculate_cost_gradient_per_weight(self, training_list):
         
         for training_item in training_list:
@@ -112,22 +160,47 @@ class Perceptron:
                     neuron.cost_gradients[i] = neuron.cost_gradients[i]/len(training_list) + self.lambda_ * neuron.weights[i]
                 neuron.cost_bias = neuron.cost_bias/len(training_list)
 
+    # Update the weights of the layers
     def _Step_weights(self):
         for layer in self.layers:
             layer.Step_weights(self.learning_rate)
     
+    # Clean the cost gradients of the layers
     def _Clean_cost_gradients(self):
         for layer in self.layers:
             layer.Clean_cost_gradients()
 
-    def Get_weights(self):
-        return [layer.Get_weights() for layer in self.layers]
-    
-    def Print_weights(self):
-        print("------ RNA weights -----")
-        weight_list = self.Get_weights()
-        for i in range(len(weight_list)):
-            print("Layer ", i, ":")
-            for j in range(len(weight_list[i])):
-                print("Neuron ",j, ":", weight_list[i][j])
-            print("----------------------")
+    def _Parse_weights(self, weights_str):
+        Perceptron_weights_array = []
+
+        # Extract layers of the file
+        layers = weights_str.split("l\n")
+        for layer in layers[1:len(layers)]:
+
+            layer_weights_array = []
+            neurons = layer.split("n\n")
+
+            # Extract neurons of the layer of the file
+            for neuron in neurons[1:]:
+                weights = []
+                neuron = neuron.replace('[', '')
+                neuron = neuron.replace(']', '')
+                neuron = neuron.replace('\n', '')
+
+                weights_str = (neuron.split(","))
+
+                # Extract bias parameter
+                bias = float(weights_str[0])
+
+                # Extract weights parameters
+                for weight in weights_str[1:]:
+                    if weight != "":
+                        weights.append(float(weight))
+
+                # Add bias and weights to the layer
+                layer_weights_array.append([bias, weights])
+            
+            # Add layer to the Perceptron
+            Perceptron_weights_array.append(layer_weights_array)
+
+        return Perceptron_weights_array
