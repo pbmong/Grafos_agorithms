@@ -1,5 +1,5 @@
 # Version: 1.0
-from Perceptron import Perceptron
+from Perceptron import *
 import math
 
 import os
@@ -8,9 +8,9 @@ from datetime import datetime
 import imageio.v3 as iio
 
 #Select the training list and the RNA structure
-Execution_mode = 1      # 1 for training, 2 to charge weights
+Execution_mode = 2      # 1 for training, 2 to charge weights
 Exercise_id = 3         # 1 for AND, 2 for AND and OR, 3 for characters
-Save_weights = True     # True to save the weights in a file (set the file name in the exercises section)
+Save_weights = False     # True to save the weights in a file (set the file name in the exercises section)
 Debug = 1               # 0 for no debug, 1 for debug cost function, 2 for debug weights
 
 
@@ -94,7 +94,7 @@ elif Exercise_id == 3:
         convergence_magnitud=4
 
     else:
-        file_name = "./RNA/Weights_datasets/Perceptron-3-24_04_2024-13_34_32.txt"
+        file_name = "./RNA/Weights_datasets/Perceptron-3-25_04_2024-00_16_45.txt"
 
 
 else:

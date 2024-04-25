@@ -3,18 +3,17 @@ import sys
 import math
 from datetime import datetime
 
-from Convolution_network import Convolution_network
+from Convolutional_network import Convolutional_network as CN
 
-CURRENT_DIR = os.path.dirname(os.path.abspath("./RNA/Perceptron.py"))
-sys.path.append(os.path.dirname(CURRENT_DIR))
-import RNA.Perceptron as Perceptron
+sys.path.insert(0, './RNA')
+from Perceptron import Perceptron as Classifier
 
 import imageio.v3 as iio
 import matplotlib.pyplot as plt
 
 # File configuration
 Execution_mode = 2                                                          # 1 for training, 2 to charge weights
-file_name = "./CNN/Weights_datasets/Perceptron-1-25_04_2024-09_56_46.txt"   # File name to load the weights
+file_name = "./Convolutional_network/Weights_datasets/Perceptron-1-25_04_2024-09_56_46.txt"   # File name to load the weights
 Save_weights = False                                                         # True to save the weights in a file (set the file name in the exercises section)
 Exercise_id = 1                                                             
 debug = 1                                                                   # 0 for no debug, 1 for debug cost function, 2 for debug weights
@@ -38,7 +37,7 @@ filters = [
              [0, 1, 0],
              [0, 0, 1]],
            ]
-network = Convolution_network(1, filters, filtering_function="ReLU", compresion_rule="ponderation", compression_rate=2)
+network = CN.Convolutional_network(1, filters, filtering_function="ReLU", compresion_rule="ponderation", compression_rate=2)
 
 # Generate dataset
 training_list = []
@@ -88,7 +87,7 @@ training_list = training_list[:55]
 
 # Create clasifier and to train it with the dataset
 RNA_structure = [40, 15, len(training_list[1][1])]
-classifier = Perceptron.Perceptron(len(training_list[1][0]), RNA_structure, 'sigmoid',learning_rate=0.1, lambda_= 25*math.pow(10,-8))
+classifier = Classifier(len(training_list[1][0]), RNA_structure, 'sigmoid',learning_rate=0.1, lambda_= 25*math.pow(10,-8))
 
 # Show initial hipotesis of the classifier
 for training_item in comprobation_list:

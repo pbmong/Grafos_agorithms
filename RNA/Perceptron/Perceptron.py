@@ -1,4 +1,4 @@
-from RNA.layer import Neural_layer
+from .layer import Neural_layer
 
 import math
 
