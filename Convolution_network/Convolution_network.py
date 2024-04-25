@@ -2,7 +2,7 @@
 import math
 
 # Class for Convolutional Neural Network
-class CNN:
+class Convolution_network:
 
     # ---- CONSTRUCTOR ----
     def __init__(self, cnn_sizes, filters, filtering_function = "ReLU", compresion_rule = "ponderation", compression_rate = 2):

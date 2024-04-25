@@ -3,7 +3,7 @@ import sys
 import math
 from datetime import datetime
 
-import CNN
+from Convolution_network import Convolution_network
 
 CURRENT_DIR = os.path.dirname(os.path.abspath("./RNA/Perceptron.py"))
 sys.path.append(os.path.dirname(CURRENT_DIR))
@@ -23,7 +23,7 @@ debug = 1                                                                   # 0 
 images_folder = "./training_resouces/characters/"
 images_path_list = os.listdir(images_folder)
 
-# CNN structure
+# Convolution network structure
 filters = [
             [[0, 1, 0],
              [0, 1, 0],
@@ -38,7 +38,7 @@ filters = [
              [0, 1, 0],
              [0, 0, 1]],
            ]
-network = CNN.CNN(1, filters, filtering_function="ReLU", compresion_rule="ponderation", compression_rate=2)
+network = Convolution_network(1, filters, filtering_function="ReLU", compresion_rule="ponderation", compression_rate=2)
 
 # Generate dataset
 training_list = []
