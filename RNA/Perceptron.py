@@ -1,4 +1,4 @@
-from layer import Neural_layer
+from RNA.layer import Neural_layer
 
 import math
 
@@ -6,7 +6,7 @@ class Perceptron:
 
     # --- CONSTUCTOR ---
 
-    def __init__(self, input_size, layers_config, activation_function,learning_rate, lambda_ = 0.1):
+    def __init__(self, input_size, layers_config, activation_function, learning_rate = 0.1, lambda_ = 0.1):
         self.input_size = input_size
         self.learning_rate = learning_rate
         self.layers = []
@@ -26,16 +26,16 @@ class Perceptron:
         J_evolution = []
 
         for i in range(iterations):
-            cost = self._Calculate_cost(training_list)
+            cost = self.__Calculate_cost(training_list)
             if past_cost - cost < math.pow(10,-convergence_magnitud):
                 print(" - Converged in iteration: ", i, " with cost: ", cost)
                 break
             else:
                 past_cost = cost
 
-            self._Calculate_cost_gradient_per_weight(training_list)
-            self._Step_weights()
-            self._Clean_cost_gradients()
+            self.__Calculate_cost_gradient_per_weight(training_list)
+            self.__Step_weights()
+            self.__Clean_cost_gradients()
         
             if debug > 0:
                 print("Iter: ", i, " Cost: ", cost)
@@ -79,7 +79,7 @@ class Perceptron:
         weights_str = weights_file.read()
         weights_file.close()
 
-        Perceptron_weights_array = self._Parse_weights(weights_str)
+        Perceptron_weights_array = self.__Parse_weights(weights_str)
 
         for i in range(len(self.layers)):
             self.layers[i].Set_weights(Perceptron_weights_array[i])
@@ -98,7 +98,7 @@ class Perceptron:
     # --- PRIVATE METHODS ---
 
     # Calculate the current cost function of the Perceptron
-    def _Calculate_cost(self, training_list):
+    def __Calculate_cost(self, training_list):
         cost = 0
         for training_item in training_list:
             hipothesis = self.Calculate_output(training_item[0])
@@ -119,7 +119,7 @@ class Perceptron:
         return cost
     
     # Calculate the error of the neurons of the layers
-    def _Calculate_neural_errors(self, training_item):
+    def __Calculate_neural_errors(self, training_item):
         for i in range(len(self.layers)-1, -1, -1):
 
             if i == len(self.layers)-1: # Calculate the error of the output neurons
@@ -138,11 +138,11 @@ class Perceptron:
                     self.layers[i].neurons[j].error = error
 
     # Calculate the cost gradients of the weights of the layers
-    def _Calculate_cost_gradient_per_weight(self, training_list):
+    def __Calculate_cost_gradient_per_weight(self, training_list):
         
         for training_item in training_list:
             self.Calculate_output(training_item[0])
-            self._Calculate_neural_errors(training_item)
+            self.__Calculate_neural_errors(training_item)
 
             for i in range(len(self.layers)):
                 for j in range(len(self.layers[i].neurons)):
@@ -161,16 +161,16 @@ class Perceptron:
                 neuron.cost_bias = neuron.cost_bias/len(training_list)
 
     # Update the weights of the layers
-    def _Step_weights(self):
+    def __Step_weights(self):
         for layer in self.layers:
             layer.Step_weights(self.learning_rate)
     
     # Clean the cost gradients of the layers
-    def _Clean_cost_gradients(self):
+    def __Clean_cost_gradients(self):
         for layer in self.layers:
             layer.Clean_cost_gradients()
 
-    def _Parse_weights(self, weights_str):
+    def __Parse_weights(self, weights_str):
         Perceptron_weights_array = []
 
         # Extract layers of the file

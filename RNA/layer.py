@@ -1,4 +1,4 @@
-from neuron import Neuron
+from RNA.neuron import Neuron
 import math
 
 class Neural_layer:
